@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "hooks": {
+    "subagentStart": [
+      {
+        "type": "command",
+        "bash": "bash .github/hooks/scripts/log-agent-invocation.sh"
+      }
+    ],
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "bash .github/hooks/scripts/validate-output-file.sh"
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "bash": "bash .github/hooks/scripts/print-pipeline-summary.sh"
+      }
+    ]
+  }
+}
