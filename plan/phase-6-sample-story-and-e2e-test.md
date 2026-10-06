@@ -45,46 +45,39 @@ The user story should be:
 * Self-contained
 * Free from external APIs or services
 
-### Recommended Story — CSV Summary CLI Tool
+### Recommended Story — Task List CLI Tool
 
 ```markdown
-# User Story: CSV Summary Report Generator
+# User Story: Task List CLI
 
-**As a** data analyst,
+**As a** person managing daily tasks,
 
-**I want** a CLI tool that reads a CSV file and outputs a summary report,
+**I want** a command-line tool that lets me add, list, and complete tasks,
 
-**So that** I can quickly understand the shape and content of any dataset without writing custom scripts.
+**So that** I can keep a simple local task list without an external service.
 
 ## Details
 
-- The tool is invoked from the command line:
-  `python -m csv_summary <path-to-csv>`
-
-- It reads the CSV file and produces a summary report printed to stdout.
-
-- The report must include:
-  - Total row count (excluding header)
-  - Column names and their inferred data types (numeric, text, date)
-  - For numeric columns: min, max, mean, and count of null values
-  - For text columns: count of unique values and count of null values
-  - For date columns: earliest and latest date and count of null values
-
-- If the file does not exist, print a clear error and exit with code 1.
-
-- If the file is empty or has only a header row, print a message and exit with code 0.
-
-- The tool must handle CSV files up to 100MB without running out of memory.
+- The tool is invoked from the command line as `python -m task_list`.
+- `add` accepts a non-empty description and prints the created task ID:
+  `python -m task_list add "Buy groceries"`.
+- `list` prints every task with its ID, status (`pending` or `complete`), and description.
+- `complete` accepts a task ID, marks the matching pending task as complete, and prints a confirmation.
+- Tasks persist in `.task-list.json` in the current working directory.
+- A missing storage file is treated as an empty task list.
+- An empty description, unknown task ID, or invalid command prints a clear error to stderr and exits with code 1.
+- An empty task list prints `No tasks found` and exits with code 0.
+- The tool uses only the Python standard library.
 
 ## Acceptance Criteria
 
-1. Given a valid CSV, the tool prints a summary report to stdout.
-2. Given a non-existent file path, the tool prints an error and exits with code 1.
-3. Given a CSV with only a header row, the tool prints "No data rows found" and exits with code 0.
-4. Numeric columns show min, max, mean, and null count.
-5. Text columns show unique count and null count.
-6. Date columns (ISO 8601 format) show earliest, latest, and null count.
-7. The tool processes a 100MB CSV file without exceeding 512MB memory usage.
+1. Given a non-empty description, `add` stores a pending task and prints its ID.
+2. Given one or more stored tasks, `list` prints each task's ID, status, and description.
+3. Given an existing pending task ID, `complete` marks the task as complete and prints a confirmation.
+4. Given an unknown task ID, `complete` prints a clear error to stderr and exits with code 1.
+5. Given an empty task list, `list` prints `No tasks found` and exits with code 0.
+6. Tasks added in one command are available to later `list` and `complete` commands.
+7. The CLI help command exits with code 0 and describes the available commands.
 ```
 
 ---
@@ -157,7 +150,7 @@ docs/requirements.md
 Example clarification:
 
 ```text
-Use pandas for CSV reading.
+Use only the Python standard library and store tasks in `.task-list.json`.
 ```
 
 or:
@@ -249,14 +242,14 @@ Expected structure may include:
 
 ```text
 src/
-└── csv_summary/
+└── task_list/
     ├── __init__.py
     ├── cli.py
-    └── analyzer.py
+    └── storage.py
 
 tests/
 ├── unit/
-│   └── test_analyzer.py
+│   └── test_storage.py
 └── integration/
     └── test_cli.py
 ```
@@ -422,7 +415,7 @@ After the pipeline completes, validate each artifact.
 * [ ] The CLI help command works:
 
 ```bash
-python -m csv_summary --help
+python -m task_list --help
 ```
 
 ---
@@ -494,7 +487,7 @@ git add docs/ src/ tests/ output/
 Then:
 
 ```bash
-git commit -m "feat: run agentic pipeline on CSV summary user story"
+git commit -m "feat: run agentic pipeline on task list user story"
 ```
 
 Push the changes:
@@ -508,7 +501,7 @@ git push
 # Deliverables Checklist
 
 * [ ] `user-stories/user-story-template.md` created
-* [ ] CSV Summary user story included
+* [ ] Task List user story included
 * [ ] Full pipeline run completed
 * [ ] All 9 specialist agents executed through the orchestrator
 * [ ] L1/L2/L3 interaction points validated
