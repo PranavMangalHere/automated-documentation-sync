@@ -216,7 +216,7 @@ PR draft above. Create this PR on GitHub? (y/n)
 PR not created. You can re-run the PR agent or edit the draft manually.
 ```
 
-- On `y`, pass explicit creation confirmation to the `pr` agent and call its GitHub MCP `create_pr` action. Wait for the response.
+- On `y`, pass explicit creation confirmation to the `pr` agent. The PR agent calls GitHub MCP `create_pull_request`; wait for its normalized response.
 - Gate: a valid response containing `status: created` and `pr_url`, such as:
 
 ```json

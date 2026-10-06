@@ -204,7 +204,7 @@ Step 9 — PR Creation (L3)
   - On n:
     "PR not created. You can re-run the PR agent or edit the draft manually."
   - On y:
-    call the PR agent via GitHub MCP using the `create_pr` action and wait for the agent's JSON response.
+    pass explicit approval to the PR agent, which calls GitHub MCP `create_pull_request`, and wait for the agent's normalized JSON response.
     The orchestrator expects a response like: `{ "status": "created", "pr_number": 42, "pr_url": "https://github.com/owner/repo/pull/42" }`.
     If MCP call fails, present the error, allow retry, or present a documented CLI fallback for manual execution.
   - Gate: valid MCP response containing `pr_url` and `status: created`

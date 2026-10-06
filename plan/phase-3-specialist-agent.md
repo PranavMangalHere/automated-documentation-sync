@@ -282,7 +282,7 @@ The exact tools available to an agent should be limited to what that agent needs
   5. **Reviewer Checklist** — tick-list the reviewer must complete before approving
 * Present the full draft to the orchestrator **without creating the PR yet**
 * Only create the PR after receiving explicit confirmation from the orchestrator, which relays it from the user
-* Use GitHub MCP to perform PR creation: accept an MCP action `create_pr` (payload: title, body, head_branch, base_branch, draft, reviewers, labels) and return a standardized JSON response on success, for example: `{ "status": "created", "pr_number": 42, "pr_url": "https://github.com/owner/repo/pull/42" }`.
+* Use GitHub MCP tool `create_pull_request` to perform PR creation with direct arguments: owner, repo, title, body, head, base, draft, maintainer_can_modify, and optional reviewers. Return a standardized JSON response on success, for example: `{ "status": "created", "pr_number": 42, "pr_url": "https://github.com/owner/repo/pull/42" }`.
 * If MCP is unavailable, the agent should include a clear, documented CLI fallback (present the `gh pr create` command the user can run manually) but prefer MCP as the primary mechanism.
 
 **Tools needed**: Read, Execute, Search

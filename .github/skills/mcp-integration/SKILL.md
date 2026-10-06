@@ -2,24 +2,22 @@
 
 Purpose
 
-This skill documents the Model Context Protocol (MCP) contract used by the pipeline to request and receive GitHub actions (specifically PR creation). It standardizes payloads, responses, error handling, and dry-run behavior so agents and the orchestrator interoperate reliably.
+This skill documents the GitHub MCP contract used by the pipeline to create pull requests. It standardizes the tool arguments, normalized response, error handling, and approval gate used by the PR agent and orchestrator.
 
 Contract
 
-Request (MCP action `create_pr`):
+Request (GitHub MCP tool `create_pull_request`):
 
 {
-  "action": "create_pr",
-  "payload": {
-    "title": "Short summary",
-    "body": "Detailed PR description",
-    "head_branch": "feature/xyz",
-    "base_branch": "main",
-    "draft": false,
-    "reviewers": ["alice","bob"],
-    "labels": ["autogen","feature"]
-  },
-  "dry_run": false
+  "owner": "owner",
+  "repo": "repository",
+  "title": "Short summary",
+  "body": "Detailed PR description",
+  "head": "feature/xyz",
+  "base": "main",
+  "draft": false,
+  "maintainer_can_modify": true,
+  "reviewers": ["alice", "bob"]
 }
 
 Success Response:
@@ -39,16 +37,17 @@ Error Response:
 
 Guidance
 
-- Agents should validate the request payload before issuing MCP calls.
-- Use `dry_run: true` for safe end-to-end tests; the service should return a simulated `pr_url` or explicit dry-run indicator.
+- The PR agent must validate direct tool arguments before issuing the MCP call.
+- `create_pull_request` has no dry-run argument. The L3 explicit-approval gate is the required safeguard before calling it.
 - The orchestrator must gate on `status: created` and `pr_url` presence before proceeding.
 - If MCP is unavailable, agents should provide a clear CLI fallback in their output explaining how to run `gh pr create` manually.
 
 Authentication & Scopes
 
-- Document required GitHub token scopes (minimum: `repo` to create pull requests; add `workflow` if the PR must trigger workflows).
-- Store credentials per project Copilot/MCP configuration; do not hardcode secrets in agent files.
+- GitHub MCP uses the authenticated GitHub account configured for the `github` MCP server; do not hardcode credentials or tokens.
+- That account must have permission to open pull requests in the target repository. Repository rules or organization policy can still deny the request.
+- The CLI fallback requires separately authenticated `gh` credentials with equivalent repository access.
 
 Examples
 
-Include a short example of a `create_pr` request and expected response (see above). Use the skill file as the canonical reference for implementations.
+Include a short example of a `create_pull_request` request and expected response (see above). Use the skill file as the canonical reference for implementations.
