@@ -5,10 +5,7 @@ description: >
   coordinates all specialist agents in sequence, enforces gating and interaction levels,
   and drives the pipeline from requirements to a GitHub PR.
 tools:
-  - read
-  - edit
-  - search
-  - execute
+  [execute, read, agent, edit, search]
 ---
 
 # Orchestrator Agent
