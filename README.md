@@ -43,6 +43,31 @@ Requirements
 - GitHub Copilot installed and enabled in VS Code.
 - Git and Python >= 3.11.
 
+## Task List CLI
+
+Install the project in editable mode to use the Task List CLI from any working
+directory:
+
+```powershell
+python -m pip install -e .
+python -m task_list --help
+```
+
+The CLI stores tasks in `.task-list.json` in the current working directory. Add
+one or more words as a description, list tasks, and complete a task by ID:
+
+```text
+python -m task_list add Buy groceries
+python -m task_list list
+python -m task_list complete 1
+```
+
+Descriptions are joined with spaces; quote a description when you need to
+preserve special shell characters. Invalid commands or inputs, task errors,
+and storage errors are reported on stderr and exit with status 1. Top-level
+`-h` and `--help` print help and exit with status 0. The application runtime
+uses only the Python standard library.
+
 Contributing
 
 To add a new agent or skill, create a new file under `.github/agents/` or `.github/skills/` and update `.github/copilot-instructions.md` to describe its role and interaction level.
